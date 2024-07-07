@@ -11,6 +11,7 @@ function App() {
     { id: 'task-2', content: 'Task 2' },
     { id: 'task-3', content: 'Task 3' },
   ]);
+  const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [newTaskContent, setNewTaskContent] = useState('');
   const [activeId, setActiveId] = useState(null);
@@ -35,19 +36,13 @@ function App() {
     if (over) {
       if (over.id === 'completed-tasks') {
         moveTask(active.id, setTasks, setCompletedTasks);
+        moveTask(active.id, setInProgressTasks, setCompletedTasks);
+      } else if (over.id === 'in-progress-tasks') {
+        moveTask(active.id, setTasks, setInProgressTasks);
+        moveTask(active.id, setCompletedTasks, setInProgressTasks);
       } else if (over.id === 'tasks') {
+        moveTask(active.id, setInProgressTasks, setTasks);
         moveTask(active.id, setCompletedTasks, setTasks);
-      } else {
-        const activeIndex = tasks.findIndex((task) => task.id === active.id);
-        const overIndex = tasks.findIndex((task) => task.id === over.id);
-
-        if (activeIndex !== overIndex) {
-          const updatedTasks = [...tasks];
-          updatedTasks.splice(activeIndex, 1);
-          updatedTasks.splice(overIndex, 0, tasks[activeIndex]);
-
-          setTasks(updatedTasks);
-        }
       }
     }
 
@@ -81,19 +76,21 @@ function App() {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <h2>Tasks</h2>
-      <form onSubmit={handleAddTask} style={{ marginBottom: '16px' }}>
+      <form className='m-10' onSubmit={handleAddTask} style={{ marginBottom: '16px' }}>
         <input
           type="text"
+          className='border-2 border-gray-700'
           value={newTaskContent}
           onChange={(e) => setNewTaskContent(e.target.value)}
           placeholder="Add a new task"
-          style={{ padding: '8px', width: 'calc(100% - 18px)', marginRight: '8px' }}
+          style={{ padding: '8px', width: '180px', marginRight: '8px' }}
         />
-        <button type="submit" style={{ padding: '8px' }}>Add</button>
+        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type="submit" style={{ padding: '8px' }}>Add</button>
       </form>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ width: '45%' }}>
+      <hr className='my-10' />
+      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <div style={{ width: '30%' }}>
+          <h2>Todo</h2>
           <Droppable id="tasks">
             {tasks.map((task) => (
               <Draggable key={task.id} id={task.id}>
@@ -102,11 +99,21 @@ function App() {
             ))}
           </Droppable>
         </div>
-        <div style={{ width: '45%' }}>
-          <h2>Completed Tasks</h2>
+        <div style={{ width: '30%' }}>
+          <h2>In Progress</h2>
+          <Droppable id="in-progress-tasks">
+            {inProgressTasks.map((task) => (
+              <Draggable key={task.id} id={task.id}>
+                {task.content}
+              </Draggable>
+            ))}
+          </Droppable>
+        </div>
+        <div style={{ width: '30%' }}>
+          <h2>Done</h2>
           <Droppable id="completed-tasks">
             {completedTasks.map((task) => (
-              <Draggable key={task.id} id={task.id}>
+              <Draggable className="border border-gray-700" key={task.id} id={task.id}>
                 {task.content}
               </Draggable>
             ))}
@@ -117,6 +124,7 @@ function App() {
         {activeId ? (
           <div className="dragging-item">
             {tasks.find((task) => task.id === activeId)?.content ||
+              inProgressTasks.find((task) => task.id === activeId)?.content ||
               completedTasks.find((task) => task.id === activeId)?.content}
           </div>
         ) : null}
