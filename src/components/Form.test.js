@@ -10,13 +10,11 @@ test('does not call handleAddTask if input is empty', () => {
     const input = screen.getByPlaceholderText('Add a new task');
     const button = screen.getByRole('button', { name: /add/i });
 
-    // Simulate form submission with empty input
     fireEvent.change(input, { target: { value: '' } });
-    console.log('Input value before clicking:', input.value); // Debugging line
+    console.log('Input value before clicking:', input.value); 
     fireEvent.click(button);
-    console.log('handleAddTask calls:', handleAddTask.mock.calls); // Debugging line
+    console.log('handleAddTask calls:', handleAddTask.mock.calls);
 
-    // Check that handleAddTask was not called
     expect(handleAddTask).not.toHaveBeenCalled();
 });
 
@@ -27,17 +25,13 @@ test('calls handleAddTask on form submission and clears the input field', () => 
     const input = screen.getByPlaceholderText('Add a new task');
     const button = screen.getByRole('button', { name: /add/i });
 
-    // Simulate user typing in the input field
     fireEvent.change(input, { target: { value: 'New Task' } });
     expect(input.value).toBe('New Task');
 
-    // Simulate form submission
     fireEvent.click(button);
 
-    // Check that handleAddTask was called with the correct value
     expect(handleAddTask).toHaveBeenCalledWith('New Task');
 
-    // Check that the input field is cleared
     expect(input.value).toBe('');
 });
 
@@ -48,11 +42,9 @@ test('does not call handleAddTask if input is only whitespace', () => {
     const input = screen.getByPlaceholderText('Add a new task');
     const button = screen.getByRole('button', { name: /add/i });
 
-    // Simulate form submission with whitespace input
     fireEvent.change(input, { target: { value: '   ' } });
     fireEvent.click(button);
 
-    // Check that handleAddTask was not called
     expect(handleAddTask).not.toHaveBeenCalled();
 });
 
@@ -62,10 +54,9 @@ test('input field can be typed into', () => {
 
     const input = screen.getByPlaceholderText('Add a new task');
 
-    // Simulate user typing in the input field
-    console.log('Input value before typing:', input.value); // Debugging line
+    console.log('Input value before typing:', input.value); 
     fireEvent.change(input, { target: { value: 'Another Task' } });
-    console.log('Input value after typing:', input.value); // Debugging line
+    console.log('Input value after typing:', input.value); 
 
     expect(input.value).toBe('Another Task');
 });
