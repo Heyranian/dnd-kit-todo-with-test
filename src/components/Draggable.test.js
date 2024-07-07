@@ -1,20 +1,26 @@
-// Draggable.test.js
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { DndContext } from '@dnd-kit/core';
-import Draggable from './Draggable'; // Adjust the import path as per your project structure
+import Draggable from './Draggable';
 
-test('renders Draggable component with children', () => {
-    const { getByText } = render(
-        <DndContext>
-            <Draggable id="draggable-1">
-                <div>Drag me</div>
-            </Draggable>
-        </DndContext>
-    );
+describe('Draggable component', () => {
 
-    expect(getByText('Drag me')).toBeInTheDocument();
+    it('renders children', () => {
+        const { getByText } = render(<Draggable id="test-id">Hello, world!</Draggable>);
+        const draggableElement = getByText('Hello, world!');
+        expect(draggableElement).toBeInTheDocument();
+    });
+
+
+    it('handles custom props', () => {
+        const { getByTestId } = render(<Draggable id="test-id" data-testid="custom-draggable">Custom Draggable</Draggable>);
+        const customDraggable = getByTestId('custom-draggable');
+        expect(customDraggable).toBeInTheDocument();
+    });
+
+    it('handles missing id prop gracefully', () => {
+
+        const { container } = render(<Draggable>Missing ID</Draggable>);
+        expect(container.firstChild).toBeInTheDocument();
+    });
+
 });
-
-

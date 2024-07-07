@@ -5,6 +5,7 @@ const Form = ({ handleAddTask }) => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        if (newTaskContent.trim() === '') return; // Prevent submission if input is empty or whitespace
         handleAddTask(newTaskContent);
         setNewTaskContent('');
     };
