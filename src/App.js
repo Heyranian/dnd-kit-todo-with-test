@@ -4,6 +4,7 @@ import { MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import Droppable from './components/Droppable';
 import Draggable from './components/Draggable';
+import Form from './components/Form';
 
 function App() {
   const [tasks, setTasks] = useState([
@@ -13,7 +14,6 @@ function App() {
   ]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
-  const [newTaskContent, setNewTaskContent] = useState('');
   const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
@@ -61,8 +61,9 @@ function App() {
     });
   };
 
-  const handleAddTask = (e) => {
-    e.preventDefault();
+
+
+  const handleAddTask = (newTaskContent) => {
     if (newTaskContent.trim() === '') return;
 
     const newTask = {
@@ -71,12 +72,13 @@ function App() {
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
-    setNewTaskContent('');
   };
+
+
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <form className='m-10' onSubmit={handleAddTask} style={{ marginBottom: '16px' }}>
+      {/* <form className='m-10' onSubmit={handleAddTask} style={{ marginBottom: '16px' }}>
         <input
           type="text"
           className='border-2 border-gray-700'
@@ -86,11 +88,19 @@ function App() {
           style={{ padding: '8px', width: '180px', marginRight: '8px' }}
         />
         <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type="submit" style={{ padding: '8px' }}>Add</button>
-      </form>
+      </form> */}
+
+      <Form handleAddTask={handleAddTask} />
       <hr className='my-10' />
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <div style={{ width: '30%' }}>
-          <h2>Todo</h2>
+      <div style={{
+        display: 'flex',
+        // alignItems: "center",
+        justifyContent: "center",
+        gap: "24px"
+      }}
+      >
+        <div className='border border-gray-400 p-2 shadow-lg' style={{ width: '20%' }}>
+          <h2 className='my-4'>Todo</h2>
           <Droppable id="tasks">
             {tasks.map((task) => (
               <Draggable key={task.id} id={task.id}>
@@ -99,9 +109,11 @@ function App() {
             ))}
           </Droppable>
         </div>
-        <div style={{ width: '30%' }}>
-          <h2>In Progress</h2>
-          <Droppable id="in-progress-tasks">
+        <div className='border border-gray-400 p-2 shadow-lg' style={{ width: '20%' }}>
+          <h2 className='my-4'>In Progress</h2>
+          <Droppable
+            id="in-progress-tasks"
+          >
             {inProgressTasks.map((task) => (
               <Draggable key={task.id} id={task.id}>
                 {task.content}
@@ -109,8 +121,8 @@ function App() {
             ))}
           </Droppable>
         </div>
-        <div style={{ width: '30%' }}>
-          <h2>Done</h2>
+        <div className='border border-gray-400 p-2 shadow-lg' style={{ width: '20%' }}>
+          <h2 className='my-4'>Done</h2>
           <Droppable id="completed-tasks">
             {completedTasks.map((task) => (
               <Draggable className="border border-gray-700" key={task.id} id={task.id}>
